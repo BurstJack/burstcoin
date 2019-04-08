@@ -1,17 +1,14 @@
 package brs.at;
 
+import java.util.HashMap;
+
 import brs.Burst;
 import brs.Constants;
+import brs.fluxcapacitor.FeatureToggle;
 import brs.fluxcapacitor.FluxInt;
-
-import java.util.HashMap;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 
 
 public class AT_Constants {
-  private static final NavigableMap< Integer, Short >  AT_VERSION = new TreeMap<>();
-	
   private static final HashMap< Short, Long > MIN_FEE = new HashMap<>();
   private static final HashMap< Short, Long > STEP_FEE  = new HashMap<>();
   private static final HashMap< Short, Long > MAX_STEPS  = new HashMap<>();
@@ -41,9 +38,6 @@ public class AT_Constants {
   private static final AT_Constants instance = new AT_Constants();
 	
   private AT_Constants() {
-    //version 1
-    AT_VERSION.put( 0, (short)1 ); //block 0 version 1
-		
     //constants for AT version 1
     MIN_FEE.put( (short) 1, 1000L );
     STEP_FEE.put( (short) 1, Constants.ONE_BURST / 10L );
@@ -65,7 +59,30 @@ public class AT_Constants {
     BLOCKS_FOR_RANDOM.put( (short) 1, 15L ); //for testing 2 -> normally 1440
     MAX_PAYLOAD_FOR_BLOCK.put( (short) 1, (Burst.getFluxCapacitor().getInt(FluxInt.MAX_PAYLOAD_LENGTH)) / 2L  ); //use at max half size of the block.
     AVERAGE_BLOCK_MINUTES.put( (short) 1, 4L );
-    // end of AT version 1		
+    // end of AT version 1
+    
+    //constants for AT version 2
+    MIN_FEE.put( (short) 2, 1000L );
+    STEP_FEE.put( (short) 2, Constants.FEE_QUANT / 10L );
+    MAX_STEPS.put( (short) 2, 100000L );
+    API_STEP_MULTIPLIER.put( (short) 2, 10L);
+		
+    COST_PER_PAGE.put( (short) 2, Constants.FEE_QUANT );
+		
+    MAX_WAIT_FOR_NUM_OF_BLOCKS.put( (short) 2, 31536000L );
+    MAX_SLEEP_BETWEEN_BLOCKS.put( (short) 2, 31536000L );
+		
+    PAGE_SIZE.put( (short) 2, 256L );
+		
+    MAX_MACHINE_CODE_PAGES.put( (short) 2, 10L );
+    MAX_MACHINE_DATA_PAGES.put( (short) 2, 10L );
+    MAX_MACHINE_USER_STACK_PAGES.put( (short) 2, 10L );
+    MAX_MACHINE_CALL_STACK_PAGES.put( (short) 2, 10L );
+		
+    BLOCKS_FOR_RANDOM.put( (short) 2, 15L ); //for testing 2 -> normally 1440
+    MAX_PAYLOAD_FOR_BLOCK.put( (short) 2, (Burst.getFluxCapacitor().getInt(FluxInt.MAX_PAYLOAD_LENGTH)) / 2L  ); //use at max half size of the block.
+    AVERAGE_BLOCK_MINUTES.put( (short) 2, 4L );
+    // end of AT version 2	
   }
 	
   public static AT_Constants getInstance( ){
@@ -73,7 +90,10 @@ public class AT_Constants {
   }
 	
   public short AT_VERSION( int blockHeight ){
-    return AT_VERSION.floorEntry( blockHeight ).getValue();
+	if(Burst.getFluxCapacitor().isActive(FeatureToggle.AT2, blockHeight))
+		return (short) 2;
+	
+    return (short) 1;
   }
 	
   public long STEP_FEE( int height ){
