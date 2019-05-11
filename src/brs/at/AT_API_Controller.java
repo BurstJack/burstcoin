@@ -123,6 +123,26 @@ class AT_API_Controller {
       case 1029:
         atApi.send_A_to_Address_in_B(state);
         break;
+
+      // AT support for Assets 
+      case 1792:
+        // 0x0700 - AssetTransfer
+        break;
+      case 1793:
+        // 0x0701 - PlaceAskOrder
+        break;
+      case 1794:
+        // 0x0702 - PlaceBidOrder
+        break;
+      case 1795:
+        // 0x0703 - AskOrderCancel
+        break;
+      case 1796:
+        // 0x0704 - BidOrderCancel
+        break;
+      case 1797:
+        // 0x0710 - TradeChange
+        break;
     }
 
     /*else if ( func_num == 1280 )
